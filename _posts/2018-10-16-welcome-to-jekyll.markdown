@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "hello jekyll!"
-date:   2015-02-10 15:14:54
+date:   2018-10-16 11:00:00
 categories: jekyll
 tags: jekyll
 excerpt: 当年创建 jekyll 时默认的一篇文章，没什么意义，我也一直没删除，留个纪念吧。
