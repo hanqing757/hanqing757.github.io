@@ -47,6 +47,7 @@ Composer是PHP的依赖包管理工具，我们不仅要会使用Composer获取�
 name表示包的名字，composer会通过这个名字搜索包。type表示包的安装类型，默认是library。autoload表示包的自动载入方式，常用的有psr0和psr4，后面会详细分析这两种载入方式的不同。
 在github上新建仓库，并将本地包推送到远程仓库。然后给项目添加release版本号，以便require可以根据版本号获取响应的包。
 登录[packagist.org](https://packagist.org/),点submit，输入github项目的地址，如https://github.com/hanqing757/trueRandom，网站会抓取你的项目页面展示如下
+![packagist]('/img/packagist.png')
 右边会显示你release的版本号，这就表明已经将你的项目发布到了packagist上了。接下来本地新建一个项目，编辑composer.json文件
 ```php
 {
