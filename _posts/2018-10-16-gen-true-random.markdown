@@ -2,8 +2,8 @@
 layout: post
 title:  "生成真正的随机数"
 date:   2018-10-16 20:01:00
-categories: true-ramdom
-tags: true-ramdom
+categories: true-random
+tags: true-random
 excerpt: 依据random.org提供的API生成真正的随机数
 mathjax: true
 ---
