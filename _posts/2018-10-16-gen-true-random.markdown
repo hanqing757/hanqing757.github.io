@@ -74,8 +74,8 @@ $body = $response->getBody();   //获取消息主体
 ```
 
 再将string经json_decode转换为array。
-那么对于json_encode和serialize，json_encode(\$value) 对变量进行json编码，value可以是除了 source 之外的所有类型，一般对array进行编码，当对object进行编码时，只保留public的实例属性，public的static以及protected和private的属性不保留，方法也不保留。
-serialize(\$value)产生一个可存储的值表示，返回字符串，包含$value的字节流，有利于传递或者存储php的值，同时不丢失其类型和结构。当对object进行序列化时可以保留public的非static属性，protected和private属性，static属性和方法不能保留。
+那么对于json_encode和serialize，json_encode(\$value) 对变量进行json编码，\$value可以是除了source之外的所有类型，一般对array进行编码，当 对object进行编码时，只保留public的实例属性，public的static以及 protected和private的属性不保留，方法也不保留。
+serialize(\$value)产生一个可存储的值表示，返回字符串，包含\$value的字节流，有利于传递或者存储php的值，同时不丢失其类型和结构。当对object进 行序列化时可以保留public的非static属性，protected和private属性，static属性和方法不能保留。
 ```php
 class testJsonEncode{
 	public $a=10;
