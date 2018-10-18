@@ -1,10 +1,10 @@
 ---
 layout: post
-title:  "如何把自己的项目发布为composer包"
-date:   2018-10-17 20:28:00
-categories: composer
-tags: composer
-excerpt: 如何将php项目发布为composer包
+title:  "shell对文本块排序"
+date:   2018-10-18 22:28:00
+categories: shell sort
+tags: shell sort
+excerpt: shell中对文本块排序
 mathjax: true
 ---
 
