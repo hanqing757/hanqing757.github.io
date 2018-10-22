@@ -11,7 +11,6 @@ mathjax: true
 * content
 {:toc}
 
-
 php中的array应用非常广泛和灵活，其底层实际上使用hashtable来实现的，类似于java中的hashmap，主要结构是数组加链表，通过hash映射到对应数组的位置，通过链表解决hash冲突。首先看一下hashtable的结构定义
 
 ![hashtable](/img/hashtable.png)
