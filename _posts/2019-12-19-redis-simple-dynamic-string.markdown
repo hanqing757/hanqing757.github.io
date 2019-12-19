@@ -41,7 +41,7 @@ struct sdshdr
 ```
 通过sdshdr中的len属性，实现复杂度为*O(1)*的字符串长度计算。另一方面，buf中会预留一些额外空间，free记录未使用空间的大小，以此来减小内存分配次数，下面我们详细讨论这一点。
 内存分配的伪代码如下：
-```C
+```c
 def sdsMakeRoomFor(sdshdr, required_len){
     if(sdshdr.free >= required_len){
         return sdshdr;
