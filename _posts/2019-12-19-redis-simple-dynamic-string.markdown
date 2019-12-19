@@ -15,6 +15,7 @@ redis中的字符串并没有使用C默认的char* 类型，因为char* 的功�
 
 那么在redis中哪些地方使用了字符串对象呢？redis的键总是字符串对象，当redis的值保存的类型是字符串时，也使用的字符串对象。只有当字符串对象保存的是字符串的时候，才包含有一个sds值。
 sds的组成结构如下
+
 ```C
 struct sdshdr
 {
@@ -28,7 +29,9 @@ struct sdshdr
     char buf[];
 };
 ```
+
 比如保存"hello world"字符串的sdshdr结构：
+
 ```C
 struct sdshdr
 {
@@ -39,6 +42,7 @@ struct sdshdr
     buf = "hello world\0";   //实际长度是len+1;
 };
 ```
+
 通过sdshdr中的len属性，实现复杂度为*O(1)*的字符串长度计算。另一方面，buf中会预留一些额外空间，free记录未使用空间的大小，以此来减小内存分配次数，下面我们详细讨论这一点。
 内存分配的伪代码如下：
 
@@ -61,7 +65,7 @@ def sdsMakeRoomFor(sdshdr, required_len){
     newsh.free = newlen - sdshdr.len;
 
     return newsh;
-}
+};
 ```
 
 目前redis版本中SDS_MAX_PREALLOC的值为1024\*1024，也就是1MB字符串大小。流程图表示如下：
