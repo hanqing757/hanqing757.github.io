@@ -65,7 +65,7 @@ def sdsMakeRoomFor(sdshdr, required_len){
     newsh.free = newlen - sdshdr.len;
 
     return newsh;
-};
+}
 ```
 
 目前redis版本中SDS_MAX_PREALLOC的值为1024\*1024，也就是1MB字符串大小。流程图表示如下：
