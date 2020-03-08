@@ -7,7 +7,7 @@ tags: Nginx php-fpm  Unix-domain-socket
 excerpt: Nginx与php-fpm通信之Unix domain socket
 mathjax: true
 ---
-## Unix domain socket
+
 网络通信使用Socket，Tcp Socket是我们所熟知的，但是还有另一种Socket，Unix domain socket，它类似于Tcp Socket，用于用一台机器上不同进程之间进行通信，主要使用socket 套接字文件，在linux上表现为以.sock结尾的文件，文件类型为s。
 
 当Tcp Socket用于同一台机器上不同进程之间通信时，需要跨越Tcp层及IP层，一系列的协议交互，当在不同机器的不同进程之间通信时，还需要从网卡将数据发出，经过物理层传输。相比之下，Unix domain socket只能用于同一台机器不同进程之间通信，通过socket文件进行数据传输，效率高于Tcp Socket。
