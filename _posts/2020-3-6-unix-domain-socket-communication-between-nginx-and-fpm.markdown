@@ -7,7 +7,7 @@ tags: Nginx php-fpm  Unix-domain-socket
 excerpt: Nginx与php-fpm通信之Unix domain socket
 mathjax: true
 ---
-### Unix domain socket
+## Unix domain socket
 网络通信使用Socket，Tcp Socket是我们所熟知的，但是还有另一种Socket，Unix domain socket，它类似于Tcp Socket，用于用一台机器上不同进程之间进行通信，主要使用socket 套接字文件，在linux上表现为以.sock结尾的文件，文件类型为s。
 
 当Tcp Socket用于同一台机器上不同进程之间通信时，需要跨越Tcp层及IP层，一系列的协议交互，当在不同机器的不同进程之间通信时，还需要从网卡将数据发出，经过物理层传输。相比之下，Unix domain socket只能用于同一台机器不同进程之间通信，通过socket文件进行数据传输，效率高于Tcp Socket。
@@ -48,7 +48,7 @@ srwxrwxrwx 1 root root 0 Mar  6 00:24 php-fpm.sock
 ![tcp-socket](/img/tcp-socket.png)
 
 看到使用的是Tcp Socket进行通信。那么这两种Socket通信的性能如何呢？我们使用ab基准测试测一下
-### Tcp socket与Unix domain socket性能比较
+## Tcp socket与Unix domain socket性能比较
 我们分别在并发10、总数1000，并发100、总数10000，并发1000、总数100000，并发10000、总数100000下进行测试，我们主要观察请求的平均耗时参数
 
 ![TcpSocketandudsperformance](/img/TcpSocketandudsperformance.png)
@@ -60,7 +60,7 @@ srwxrwxrwx 1 root root 0 Mar  6 00:24 php-fpm.sock
 4. 随着并发数和请求总数的提升，Unix domain socket性能提升明显优于Tcp socket。
 
 由于Tcp是面向连接的协议，nginx通过Tcp socket进行代理的时候需要loopback，申请端口以及Tcp相关资源，所以处理性能劣于Tcp socket，但是在并发数大量增加的时候，由于没有面向连接协议的支撑，Unix domain socket很容易出错不返回，因此我们在低并发比如1000以内我们选择 Unix domain socket，因为它比较轻量级；在高并发的时候我们选择Tcp socket。当我们选择了Unix domain socket，而并发数突然增长的时候，我们有没有办法优化呢？有，使用backlog，下面我们先了解一下backlog。
-### 增大backlog提高并发能力
+## 增大backlog提高并发能力
 首先我们看一下socket建立和Tcp三次握手的过程
 
 ![setup-socket](/img/setup-socket.png)
