@@ -14,7 +14,7 @@ hset key field value
 hsetnx key field value
 hget key field
 hexist key field
-hdel key field [field...]   //一次删除多个field
+hdel key field \[field...]   //一次删除多个field
 hlen key                    //key中field的数量
 hstrlen key field           //field对应value的string的长度
 hincrby key field increment
