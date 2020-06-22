@@ -14,7 +14,7 @@ hset key field value
 hsetnx key field value
 hget key field
 hexist key field
-hdel key field \[field...]   //一次删除多个field
+hdel key field [field...]   //一次删除多个field
 hlen key                    //key中field的数量
 hstrlen key field           //field对应value的string的长度
 hincrby key field increment
@@ -29,6 +29,7 @@ hscan key corsur pattern count
 如果我们用string类型存储一个用户对象数据，当对象中的属性频繁变化的时候会涉及到频繁的序列化和反序列化；如果我们用用户id+对象的属性作为一个key来存储，会造成用户id重复存储。此时hash可以很好的解决这个问题，用户id作为key，每一个属性作为一个field，这样就可以避免序列化和反序列化的消耗，快速修改每一个对象的属性。
 
 #####ZIPLIST
+
 hash对象的底层存储使用了ziplist（压缩列表）和hashtable，当hash的field和value都小于64字节并且hash的field个数小于512的时候使用ziplist存储，否则使用
 hashtable存储，以上两个门限可在redis.conf进行配置。
 ```shell
