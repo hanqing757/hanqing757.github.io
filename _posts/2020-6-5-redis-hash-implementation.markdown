@@ -107,6 +107,7 @@ typedef struct zlentry {
 其中，prevlen是2，encoding是0x0b，符合第一个中情况，是一个string，string的长度为11，0x48656c6c6f20576f726c64为11字节，表示"Hello World"。
 
 #### hash table
+
 hash table是经典数据结构，在Java中也有重要应用。用数组存放每一个键值对，使用链表解决hash冲突。对redis hash的增删改操作实际就是对hash table的操作。
 
 ![hash-table](/img/redis-hash-implementation/hash-table.png)
