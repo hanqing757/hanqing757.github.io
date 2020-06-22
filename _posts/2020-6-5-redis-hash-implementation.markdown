@@ -28,7 +28,7 @@ hscan key corsur pattern count
 ```
 如果我们用string类型存储一个用户对象数据，当对象中的属性频繁变化的时候会涉及到频繁的序列化和反序列化；如果我们用用户id+对象的属性作为一个key来存储，会造成用户id重复存储。此时hash可以很好的解决这个问题，用户id作为key，每一个属性作为一个field，这样就可以避免序列化和反序列化的消耗，快速修改每一个对象的属性。
 
-#####ZIPLIST
+##### ZIPLIST
 
 hash对象的底层存储使用了ziplist（压缩列表）和hashtable，当hash的field和value都小于64字节并且hash的field个数小于512的时候使用ziplist存储，否则使用
 hashtable存储，以上两个门限可在redis.conf进行配置。
@@ -106,7 +106,7 @@ typedef struct zlentry {
 ```
 其中，prevlen是2，encoding是0x0b，符合第一个中情况，是一个string，string的长度为11，0x48656c6c6f20576f726c64为11字节，表示"Hello World"。
 
-#####hash table
+##### hash table
 hash table是经典数据结构，在Java中也有重要应用。用数组存放每一个键值对，使用链表解决hash冲突。对redis hash的增删改操作实际就是对hash table的操作。
 
 ![hash-table](/img/redis-hash-implementation/hash-table.png)
@@ -153,7 +153,7 @@ typedef struct dictType {
 } dictType;
 
 ```
-######hash函数
+###### hash函数
 对hash的任何操作首先需要通过hash函数计算出hash值，进而计算在hash table中的索引位置。hash函数的设计优劣决定了hash冲突的大小。redis默认采用SipHash作为
 hash计算方式。
 ```c
@@ -216,7 +216,7 @@ uint64_t siphash(const uint8_t *in, const size_t inlen, const uint8_t *k) {
 #endif
 }
 ```
-#####扩容&缩容&rehash
+###### 扩容&缩容&rehash
 当hash表的大小不能满足需求的时候，就会有两个或者两个以上的key被分到hash表的同一个索引上，引发冲突。为了尽量避免冲突，需要对hash表进行扩容和收缩。那么当hash表的大小变化了之后随之而来的就是rehash操作。
 扩容：在每一次对key计算hash的时候，都会判断hash表是否需要进行扩容。当hash表的元素个数大于表大小的时候，会扩容为元素个数的2倍；当redis在进行bgsave(RDB持久化)的时候尽量避免扩容(dict_can_resize)，但是当元素个数是表大小5倍的时候，会强制进行扩容。
 ```c
@@ -404,7 +404,7 @@ dictEntry *dictNext(dictIterator *iter)
 }
 ```
 
-dictScan实现
+##### dictScan实现
 dictScan方法是hscan命令的底层实现，dictNext在可以是安全的迭代，而安全的迭代是不允许rehash的发生。但是hscan命令是client主动发起的，不能阻止rehash的发生。通过初始化cursor=0，返回迭代元素及新的cursor，下一次通过返回的cursor继续迭代。如果没有rehash，只有一个table的时候，dictScan很容易实现，但是rehash的时候将会出现两个table，如果dictScan和rehash同时发生，那么如何保证在迭代的过程中不重复迭代，也不漏掉元素，dictScan设计了一个很精妙的迭代顺序。
 ```c
 unsigned long dictScan(dict *d,
@@ -571,7 +571,7 @@ size:16 0000 --> 0001 --> 0010 --> 0011 --> 0100 --> 0101 --> 0110 --> 0111 --> 
 假设在长度为8的时候，我们迭代完010，将要迭代011的时候table的长度扩展到16，011在长度为16的table中为0011，在长度为8的情况下，已经迭代过000，001，010，这三个节点扩展到长度为16的table中的时候，对应，0000，1000，0001，1001，0010，1010，在长度为16的情况下我们从0011开始迭代，这样的话之前迭代过的1000，1001,1010就会重复迭代。
 
 
-#####hset的实现过程
+##### hset的实现
 首先看下在t_hash.c中定义的hsetCommand方法
 ```c
 void hsetCommand(client *c) {
