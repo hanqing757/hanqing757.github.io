@@ -134,7 +134,7 @@ int aeProcessEvents(aeEventLoop *eventLoop, int flags){
 
 下面分析下Linux中几种IO模型
 
-#####同步阻塞IO（blocking IO）
+##### 同步阻塞IO（blocking IO）
 用户进程发起了一个系统调用比如read，进程就立即被阻塞了，不消耗CPU，不干任何别的事，等待响应数据的到来。
 ![blockingio](/img/redis-event/blockingio.png)
 
