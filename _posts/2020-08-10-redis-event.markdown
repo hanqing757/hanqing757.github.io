@@ -153,7 +153,7 @@ IO多路复用的核心是使用了系统级的调用，select，epoll等。它�
 ![multiplexingio](/img/redis-event/multiplexingio.png)
 
 
-epoll与select的区别。epoll比select更加高级，select是通过对所有监听的文件描述符进行遍历得到活跃的socket，当文件描述符集合很大并且活跃数很少的时候select的性能会严重降低，并且select所监听的文件描述符数量是有限的，限制为单个进所能打开的最大文件数的，通过ulimit -n查看。epoll所监听的文件描述符的数量可以人为是无限的，并且对文件描述符设置了callback，当文件描述符活跃的时候会主动调用callback，这样就可以很快的获得活跃的文件描述符，避免了select的遍历带来的性能损耗。
+epoll与select的区别。epoll比select更加高级，select是通过对所有监听的文件描述符进行遍历得到活跃的socket，当文件描述符集合很大并且活跃数很少的时候select的性能会严重降低，并且select所监听的文件描述符数量是有限的，限制为单个进所能打开的最大文件数的，通过ulimit -n查看。epoll所监听的文件描述符的数量可以认为是无限的，并且对文件描述符设置了callback，当文件描述符活跃的时候会主动调用callback，这样就可以很快的获得活跃的文件描述符，避免了select的遍历带来的性能损耗。
 
 
 #### redis中如何多路复用
