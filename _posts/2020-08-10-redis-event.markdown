@@ -127,10 +127,34 @@ int aeProcessEvents(aeEventLoop *eventLoop, int flags){
 
 ![iothread](/img/redis-event/iothread.png)
 
-#### IO多路复用
+#### linux中的IO模型
+网络IO的本质是对socket的读取，Linux中socket被抽象为文件，IO实际上就是对文件的读取和写入，当一个read操作发生时，它会经历两个阶段，
+（1）等待数据准备，socket层面就是等待数据分组的到达，并将数据复制到内核缓冲区
+（2）将数据由内核缓冲区拷贝到用户进程缓冲区
+
+下面分析下Linux中几种IO模型
+#####同步阻塞IO（blocking IO）
+用户进程发起了一个系统调用比如read，进程就立即被阻塞了，不消耗CPU，不干任何别的事，等待响应数据的到来。
+![blockingio](/img/redis-event/blockingio.png)
+
+优点：对开发者友好，简单
+缺点：不能很好的利用进程资源，使IO的性能降低
+
+##### 同步非阻塞IO（nonblockinhg IO）
+用户进程发起了一个系统调用比如read，进程立即返回一个error，这个时候进程可以干点别的事，然后再立即发起一个和刚才一样的系统调用，如果数据准备好了则立即将数据拷贝到用户进程；否则还是返回一个error。进程就这样以轮询的方式不断的发起read操作，直到数据准备好返回为止。
+![nonblockingio](/img/redis-event/nonblockingio.png)
+
+优点：不用一直阻塞进程，在多次轮询期间进程可以有别的操作
+缺点：数据准备好的时刻可能发生在两次轮询期间，这样会增大响应时间，降低系统吞吐量
+
+##### 多路复用IO （multiplexing IO）
+IO多路复用的核心是使用了系统级的调用，select，epoll等。它可以等待多个socket，实现对多个IO端口进行监听，当有任何一个可读或者可写事件发生的时候，epoll就会返回这个对应的文件描述符，然后再对这个文件描述符执行read或者write操作。当然，执行epoll方法等待文件描述符的返回过程是阻塞的，那如何知道哪一个文件描述符发生了可读或可写事件呢？这个监视的事情是交由内核处理的。与阻塞IO不同的是多路复用IO是可以一次等待多个socket，当有数据到来的时候会自动返回对应的文件描述符。
+![multiplexingio](/img/redis-event/multiplexingio.png)
 
 
-##### linux中的IO方式
+epoll与select的区别。epoll比select更加高级，select是通过对所有监听的文件描述符进行遍历得到活跃的socket，当文件描述符集合很大并且活跃数很少的时候select的性能会严重降低，并且select所监听的文件描述符数量是有限的，限制为单个进所能打开的最大文件数的，通过ulimit -n查看。epoll所监听的文件描述符的数量可以人为是无限的，并且对文件描述符设置了callback，当文件描述符活跃的时候会主动调用callback，这样就可以很快的获得活跃的文件描述符，避免了select的遍历带来的性能损耗。
 
 
-##### redis中如何多路复用
+#### redis中如何多路复用
+redis封装了多个多路复用模块，select，epoll，kqueue。每个模块为上层提供了相同的接口，redis根据不同的操作系统和性能选择最适合的多路复用模块。
+![event-driven](/img/redis-event/event-driven.png)
