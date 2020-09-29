@@ -410,3 +410,9 @@ skiplist和平衡树的比较主要从三个方面来考虑，内存占用，插
 
 当然，skiplist也会有缺点，由于每层的level是随机生成的，很有可能skiplist的几层链表都是一样的或者层数很少，这样会使得查询复杂度高于O(log n)，但还是优于
 O(n)的，并且这种也属于极端情况，比较少见。
+
+#### 引文参考
+1. https://www.jianshu.com/p/cc379427ef9d
+2. https://blog.csdn.net/GDJ0001/article/details/80119209
+3. https://www.cnblogs.com/yuanfang0903/p/12165394.html
+4. https://blog.csdn.net/weixin_36194037/article/details/79440464
