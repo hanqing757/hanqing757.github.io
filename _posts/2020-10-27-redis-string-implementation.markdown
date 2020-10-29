@@ -107,6 +107,7 @@ header主要由四部分组成，
 1. len，string的实际长度
 2. alloc，为字符数组分配的长度，也即就是数组容量，多分配容量可以保证在append的时候不再分配内存。
 3. flags，用一个字节的前3bit表示header的类型，header的类型有5中，根据不同的string长度选择不同的header类型。
+
 ```c
 #define SDS_TYPE_5  0
 #define SDS_TYPE_8  1
@@ -114,7 +115,9 @@ header主要由四部分组成，
 #define SDS_TYPE_32 3
 #define SDS_TYPE_64 4
 ```
+
 当所存储的string的长度在[2^5-1, 2^8)时，选择SDS_TYPE_8；当长度在[2^8-1, 2^16-1)时选择SDS_TYPE_16；当长度在[2^16-1, 2^32-1)时选择SDS_TYPE_32；当长度在[2^32-1, )时选择SDS_TYPE_64。可以看到redis无处不在的节约内存，不同的string长度选择不同的字节存储。
+
 下面图示一下sds的结构
 
 ![sds](/img/redis-string/sds.png)
