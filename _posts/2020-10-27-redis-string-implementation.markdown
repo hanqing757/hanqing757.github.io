@@ -72,10 +72,41 @@ struct __attribute__ ((__packed__)) sdshdr64 {
     char buf[];
 };
 ```
+首先我们可以看到sds的header结构体声明时使用了 __attribute__ ((__packed__)) 。这实际上是让C的struct不进行字节对齐，使用紧凑的方式排列，这样可以直接通过内存来访问变量。
+通常情况下，C在建立结构体的时候会自动进行字节对齐，所以实际占用内存比变量的字节数多一些，来看一个例子
+```c
+#include <stdio.h>
+#include <iostream>
+ 
+using namespace std;
+ 
+struct test1 {
+    char c;
+    int i;
+};
+ 
+struct __attribute__ ((__packed__)) test2 {
+    char c;
+    int i;
+};
+ 
+int main()
+{
+    cout << "size of test1:" << sizeof(struct test1) << endl;
+    cout << "size of test2:" << sizeof(struct test2) << endl;
+}
+```
+输出如下
+```c
+size of test1:8
+size of test2:5
+```
+test1结构体没有用packed声明，所以使用4字节对齐的方式，即char变量也占用4个字节，加上int的4字节，一共8字节。test2使用了packed进行了声明，不进行内存字节对齐，所以占用内存就是变量所占用的5个字节。
+
 header主要由四部分组成，
 1. len，string的实际长度
 2. alloc，为字符数组分配的长度，也即就是数组容量，多分配容量可以保证在append的时候不再分配内存。
-3. flags，用一个字节的前3bit表示header的类型，header的类型有5中，根据不同的string长度选择不同的header类型
+3. flags，用一个字节的前3bit表示header的类型，header的类型有5中，根据不同的string长度选择不同的header类型。
 ```c
 #define SDS_TYPE_5  0
 #define SDS_TYPE_8  1
@@ -215,7 +246,7 @@ void setCommand(client *c) {
 2. 对于string类型，如果不是RAW或者EMBSTR的编码方式，则不进行重编码
 3. 对于redis的共享对象不进行重编码。共享对象存在于整个redis空间中，并且随时可能被释放，所以不进行操作。
 4. 如果stirng类型存储的是数字并且小于long表示的最大整数，则将对象的编码方式由OBJ_ENCODING_RAW 转为 OBJ_ENCODING_INT，redisObject当中的ptr指针直接指向转换后的long型数据。
-5. 如果字符串的长度小于44，则将编码方式转为OBJ_ENCODING_EMBSTR，这是一种对内存更高效的存储方式。
+5. 如果字符串的长度小于44，则将编码方式转为OBJ_ENCODING_EMBSTR，这是一种对内存更高效的存储方式，将redisObject和sds存储在连续的内存块中，从而减小内存碎片。
 6. 如果通过这一系列的操作string的编码方式没有转换，则判断sds当中剩余空间是否过大，大则释放多余空间。
 
 #### sds和string
@@ -223,3 +254,8 @@ void setCommand(client *c) {
 2. 通常incr/decr只对数字有效，getrange/setrange只对真正的string有效。那当对string执行incr时，会首先将存储的string转为long，只有转换成功才执行操作。当对string型的数字执行getrange操作时，会先将long型数据转换为字符串再执行getrange操作。
 
 所以，通常的string类型存储在sds当中，也就是在字符数组中，通过len属性可以快速读取长度；可以对字符数组进行切片读取或者部分设置的操作；通过不同的编码方式节省string的存储空间；支持对字符串和long的编码转换以适应不同的操作。
+
+#### 参考文章
+https://blog.csdn.net/weixin_39533180/article/details/76207099
+http://zhangtielei.com/posts/blog-redis-sds.html
+http://zhangtielei.com/posts/blog-redis-robj.html
