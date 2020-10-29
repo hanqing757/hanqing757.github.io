@@ -259,6 +259,6 @@ void setCommand(client *c) {
 所以，通常的string类型存储在sds当中，也就是在字符数组中，通过len属性可以快速读取长度；可以对字符数组进行切片读取或者部分设置的操作；通过不同的编码方式节省string的存储空间；支持对字符串和long的编码转换以适应不同的操作。
 
 #### 参考文章
-https://blog.csdn.net/weixin_39533180/article/details/76207099
-http://zhangtielei.com/posts/blog-redis-sds.html
-http://zhangtielei.com/posts/blog-redis-robj.html
+1. https://blog.csdn.net/weixin_39533180/article/details/76207099
+2. http://zhangtielei.com/posts/blog-redis-sds.html
+3. http://zhangtielei.com/posts/blog-redis-robj.html
