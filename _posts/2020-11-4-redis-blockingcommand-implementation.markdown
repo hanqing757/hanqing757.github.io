@@ -167,6 +167,7 @@ void blockClient(client *c, int btype) {
 3. 执行blockClient，阻塞客户端。将客户端标志位设置为CLIENT_BLOCKED（不对阻塞客户端执行命令），并加入clients_timeout_table（为超时取消做准备）。
 
 我们看下blocking_keys的结构
+
 ![blocking-keys](/img/blocking/blocking-keys.png)
 
 这样一个阻塞动作就完成了。
@@ -416,7 +417,7 @@ void handleBlockedClientsTimeout(void) {
     }
 }
 ```
-#####　主动取消
+##### 主动取消
 当然，客户端也可以主动断开连接，这样也会解除客户端的阻塞状态。
 
 #### 参考文章
